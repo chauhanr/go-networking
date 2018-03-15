@@ -1,0 +1,10 @@
+### STS ###
+.exe
+
+### Folders ###
+pkg/
+bin/
+
+### Folders ###
+server/*.exe
+client/*.exe
