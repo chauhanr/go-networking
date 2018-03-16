@@ -16,17 +16,17 @@ func main(){
 
 	switch os.Args[1] {
 	case "tcp":
-		TCPClient()
+		TCPClient(os.Args[1])
 	case "udp":
-		UDPClient()
+		UDPClient(os.Args[1])
 	}
 }
 
-func TCPClient(){
-	tcpAddr, err := net.ResolveTCPAddr("tcp", names.TCP_SERVER_PORT)
-	checkError(err)
+func TCPClient(proto string){
+	/*tcpAddr, err := net.ResolveTCPAddr("tcp", names.TCP_SERVER_PORT)
+	checkError(err)*/
 
-	conn, err := net.DialTCP("tcp", nil, tcpAddr)
+	conn, err := net.Dial(proto, names.TCP_SERVER_PORT)
 	checkError(err)
 
 	_,err = conn.Write([]byte(""))
@@ -39,14 +39,14 @@ func TCPClient(){
 
 }
 
-func UDPClient(){
-	udpAddr, err := net.ResolveUDPAddr("udp4", names.UDP_SERVER_PORT)
+func UDPClient(proto string){
+	/*udpAddr, err := net.ResolveUDPAddr("udp4", names.UDP_SERVER_PORT)
+	checkError(err)*/
+
+	conn, err := net.Dial(proto, names.UDP_SERVER_PORT)
 	checkError(err)
 
-	conn, err := net.DialUDP("udp", nil, udpAddr)
-	checkError(err)
-
-	_,err = conn.Write([]byte("anything"))
+	_,err = conn.Write([]byte(""))
 	checkError(err)
 
 	var buf [512]byte

@@ -25,10 +25,10 @@ func main(){
 
 func StartTCPServer(){
 	service := names.TCP_SERVER_PORT
-	tcpAddr, err := net.ResolveTCPAddr("tcp4", service)
-	checkError(err)
+	/*tcpAddr, err := net.ResolveTCPAddr("tcp4", service)
+	checkError(err)*/
 
-	listener,err := net.ListenTCP("tcp", tcpAddr)
+	listener,err := net.Listen("tcp", service)
 	checkError(err)
 
 	for {
@@ -41,26 +41,27 @@ func StartTCPServer(){
 	}
 }
 
+/**This method will start the UDP serverit will use the ListenPacket() in net package to
+   get the PacketConnection  */
 func StartUDPServer(){
-	udpAddr, err := net.ResolveUDPAddr("udp4", names.UDP_SERVER_PORT)
-	checkError(err)
+	service := names.UDP_SERVER_PORT
 
-	conn, err := net.ListenUDP("udp", udpAddr)
+	conn, err := net.ListenPacket("udp", service)
 	checkError(err)
 	for{
 		handleUDPClient(conn)
 	}
 }
-
-func handleUDPClient(conn *net.UDPConn){
+/** as UDP is a connectionless protocol and does not require session like TCP the source and destination are already
+	mentioned in the request. */
+func handleUDPClient(conn net.PacketConn){
 	var buf [512]byte
-
-	_,addr, err := conn.ReadFromUDP(buf[0:])
+	_,addr, err := conn.ReadFrom(buf[0:])
 	if err != nil{
 		return
 	}
 	daytime := time.Now().String()
-	conn.WriteToUDP([]byte(daytime), addr)
+	conn.WriteTo([]byte(daytime), addr)
 }
 
 
