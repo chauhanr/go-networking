@@ -11,7 +11,7 @@ import (
 /** Day timeserver*/
 func main(){
 	if len(os.Args) != 2 {
-		fmt.Printf("Usage: Choose between (TCP, UDP protocol servers)")
+		fmt.Printf("Usage: <protocol> [tcp|udp]")
 		os.Exit(1)
 	}
 
@@ -36,6 +36,7 @@ func StartTCPServer(){
 		if err != nil{
 			continue
 		}
+
 		daytime := time.Now().String()
 		go handleClient(conn, daytime)
 	}
