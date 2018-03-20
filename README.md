@@ -45,3 +45,70 @@ This is specific to the golang and is not a format supported by any other langua
 servers are both in golang. it supports all data type, structs but does not support channels and functions.  Also circular data
 structures are also not very well supported. The api for the package is similar to the one of the json encoding package. Similar
 encoder and decoders can be found.
+
+
+## Protocol Design
+There are number of issue that are involved in protocol design:
+
+* It is broadcast or point to point. Broadcast protocol must use UDP or local multicast. For p2p use TCP or UDP.
+* Is it useful to be stateless or stateful? if is better for one side to maintain state when compared to the other side.
+* Is the transport protocol reliable or unreliable?
+* Are replies needed? if they are then what happens when one does not arrive. (timeouts)
+* what data format do you want? MIME or byte encoding are common possibilities
+* Is the communication needed bursty or steady stream? Ethernet and internet are good at bursty traffic. For steady stream needed in case of video.
+if the steady stream is needed what about the QoS (quality of service).
+* Are multiple streams with sync required? does that data need to be sync with anything.
+* Are you building a standalone application or a lib for others to use.
+
+
+#### Message Format
+In client server interaction with messages we have two parts:
+1. **message type** (this can be either integers or strings - HTTP has int codes to have message type)
+2. **message content** - this is the exact message
+
+#### Data Format
+
+**Byte Format** - in byte format the message content is represented as a series of bytes.
+* The first byte identifies the message type.
+* based on the message type the handler for handling the message will be choosen
+* other bytes in the message will conform to the content according to the pre-defined format (json, gob, asn1 etc)
+
+Advantages of byte format is that the data is compact and fast where as the disadvantage is that it is difficult to debug.
+
+```
+    handleClient(conn) {
+        while(true){
+            byte b = conn.readByte()
+            switch(b) {
+                case MSG1:
+                        ...
+                case MSG2:
+                        ...
+            }
+        }
+    }
+```
+
+**Character Format** - here everything that is sent is a character if possible. Integer 234 is sent as 3 characters '2', '3', '4'.
+
+In character format:
+* A message is sequence of one or more lines. The first word in the message is the indicator of the message type.
+* String handling functions are used to determine the message type and decode message.
+* rest of the first line and other lines are data.
+* all handling happens line by line.
+
+```
+
+     handleClient(conn) {
+        line = conn.readLine()
+        if line.startsWith(..){
+            ...
+        } else if line.startsWith(...){
+            ...
+        }
+      }
+
+```
+
+Character sets are not easy handle because of the encoding the data may have.
+
