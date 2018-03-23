@@ -112,3 +112,83 @@ In character format:
 
 Character sets are not easy handle because of the encoding the data may have.
 
+
+# Character sets and Encoding
+A **character** is a unit of information that roughly corresponds to a symbol of a natural language, such as a letter, number or punctuation mark.
+
+**Character Code** - is mapping of a character to an integer, e.g. in ASCII code set 'a' is denoted by 97 and 'A' denoted by 65.
+this code is still not the one that you see in text files or TCP packets, there are few encoding left.
+
+**Character encoding** - To communicate or store the characters on disk or over the network the characters are encoded in binary format. All encoding will
+in terms of 8, 32, 64 or 128 formats. So the type of encoding used gives us the code.
+
+**Transport encoding** - this is encoding that is done over an above character encoding that allows for transport of data over the network.
+
+The information of type of encoding is sent in headers for any protocol. The header has infromation like the one given below
+
+```
+Content-Type: text/html; charset=ISO-8859-4
+Content-Encoding: gzip
+Transfer-Encoding: chunked
+```
+
+Here we see that the content encoding is done using gzip where as transfer encoding is chunked.
+* **chunked** - data is sent in a series of chunks and then separated by \r\n
+* **compress** - a format that uses the LZW algorithm to compress the content
+* **deflate** - uses the zlib structure and a deflate algorithm for compression.
+* **gzip** - uses LZ coding with 32 bit CRC
+* **identity** - no compression or modification.
+
+
+#### ASCII
+This character set is small it holds all the english aplhabets and numbers plus some punctuations and control characters it is represented in 7 bit format.
+
+#### ISO-8859
+This character set is an octet 8 bits format that adds 128 characters to the set which allows for support of more characters.
+But still there are ISO-8859-1 to ISP-8859-10 sets that support different languages.
+
+#### Unicode
+When it came to languages like english the character set is small so that ISO or ASCII can be used easily, but when it comes to
+languages like Chinese there are 20,000 characters 5000 in common use there is a need to use 2 byte character set code.
+Even Unicode has become small to hold all characters so we have the following:
+* UTF-32 (4 byte encoding)
+* UTF-16 encodes in 2 bytes with 2 bytes for overflow.
+* UTF-8 uses 1 to 4 bytes for encoding per character depending on the character code.
+
+
+# Security
+
+Security has Functions and Levels and these correspond to the OSI architecture.
+
+#### Functions
+Principle functions of the security system are:
+1. Authentication
+2. Data Integrity
+3. Confidentiality
+4. Notaization/signature
+5. Access Control
+6. Assurance/availability
+
+#### Levels
+* Peer entity authentication
+* Data origin authentication
+* Access control service
+* Connection confidentiality
+* Connectionless confidentiality
+* Selected field confidentiality
+* Traffic flow confidentiality
+* Connection integrity with recovery
+* Connection integrity without recovery
+* Connection integrity selective field
+* Connectionless integrity selective field
+* Non repudiation at origin
+* Non repudiation of receipt
+
+### Data Integrity
+data integrity is all about insuring the data is not tampered with. This is usually done
+by calculating a hash value (simple number) out of the bytes of the data.
+
+For security purpose the hashing algorithm needs to be good so that the hackers cannot crack the code and tamper with the data.
+There are a series of cryptographic algorithms that are used for calculating the hash value.
+
+Golang supports MD4, MD5, RIPEMD-160, SHA1, SHA224, SHA256, SHA384 and SHA512
